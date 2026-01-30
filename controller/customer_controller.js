@@ -48,6 +48,23 @@ exports.loginCustomer = asyncHandler(async (req, res, next) => {
     sendTokenResponse(customer, 200, res);
 });
 
+exports.getCustomerById = asyncHandler(async (req, res) => {
+    const customer = await Customer.findById(req.params.id);
+
+    if (!customer) {
+        return res.status(404).json({ message: "Customer not found" });
+    }
+
+    //remove password from response
+    const customerResponse = customer.toObject();
+    delete customerResponse.password;
+
+    res.status(200).json({
+        success: true,
+        data: customerResponse,
+    });
+});
+
 exports.getAllCustomer = asyncHandler(async (req, res) => {
   const customers = await Customer.find();
 
@@ -134,3 +151,5 @@ const sendTokenResponse = (customer, statusCode, res) => {
         token,
     });
 };
+
+module.exports = exports;

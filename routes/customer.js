@@ -8,8 +8,10 @@ const {
   deleteCustomer,
   getAllCustomer,
   loginCustomer,
+  getCustomerById,
 } = require("../controller/customer_controller");
 
+router.get("/:id", protect, getCustomerById);
 router.post("/signup", createCustomer);
 router.get("/", protect, getAllCustomer);
 router.post("/login", loginCustomer);
