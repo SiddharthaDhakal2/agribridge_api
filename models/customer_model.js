@@ -23,32 +23,25 @@ const CustomerSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please add a password"],
         minlength: 6,
-        select: false, // Don't include password in queries by default
+        select: false, 
     },
-   
     createdAt: {
         type: Date,
         default: Date.now,
     },
+    // Add this field for profile image path
+    profileImage: {
+        type: String,
+        default: null,
+    },
 });
 
-// Encrypt password using bcrypt
-CustomerSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) {
-        next();
-    } else {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        // next();
-    }
+// Encrypt password using bcrypt before saving
+CustomerSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
-
-// CustomerSchema.pre("save", async function (next) {
-//     if (!this.isModified("password")) return next(); // <-- ADD return here
-//     const salt = await bcrypt.genSalt(10);
-//     this.password = await bcrypt.hash(this.password, salt);
-//     next(); 
-// });
 
 // Sign JWT and return
 CustomerSchema.methods.getSignedJwtToken = function () {
