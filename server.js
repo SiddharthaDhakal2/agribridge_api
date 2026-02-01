@@ -103,6 +103,9 @@ app.use(cors(corsOptions)); // Enable CORS with options
 app.use(limiter); // Apply rate limiting to all requests
 app.use(express.static(path.join(__dirname, "public"))); // Serve static files
 
+// --- Add this line to serve uploaded images ---
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // // Routes
 // const batchRoutes = require("./routes/batch_route");
 // app.use("/api/v1/batches", batchRoutes);
@@ -114,6 +117,10 @@ app.use(express.static(path.join(__dirname, "public"))); // Serve static files
 const customerRoutes = require("./routes/customer");
 app.use("/agribridge/customers/login", authLimiter);
 app.use("/agribridge/customers", customerRoutes);
+
+// --- Add these lines for profile image upload/fetch ---
+const profileRoutes = require("./routes/profile");
+app.use("/agribridge/profile", profileRoutes);
 
 // const itemRoutes = require("./routes/item_route");
 // app.use("/api/v1/items", itemRoutes);
