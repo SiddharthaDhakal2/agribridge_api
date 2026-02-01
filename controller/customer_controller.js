@@ -45,7 +45,18 @@ exports.loginCustomer = asyncHandler(async (req, res, next) => {
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    sendTokenResponse(customer, 200, res);
+    // Remove password from response
+    const customerResponse = customer.toObject();
+    delete customerResponse.password;
+
+    // Create token
+    const token = customer.getSignedJwtToken();
+
+    res.status(200).json({
+        success: true,
+        token,
+        data: customerResponse, 
+    });
 });
 
 exports.getCustomerById = asyncHandler(async (req, res) => {
@@ -128,9 +139,7 @@ exports.deleteCustomer = asyncHandler(async (req, res) => {
     });
 });
 
-
-// Get token from model, create cookie and send response
-
+// You can keep this for other uses if needed
 const sendTokenResponse = (customer, statusCode, res) => {
     // Create token
     const token = customer.getSignedJwtToken();
